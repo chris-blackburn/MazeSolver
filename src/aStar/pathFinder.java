@@ -10,6 +10,7 @@ public class pathFinder {
 	private final int DIAGANOL_COST = 14;
 
 	private Node startNode, endNode, currentNode;
+	private Node[] blockedNodes;
 	private Node[] neighborNode = new Node[8];
 
 	// order x: -1, 0, 1, -1, 1, -1, 0, 1
@@ -22,24 +23,19 @@ public class pathFinder {
 	private List<Node> openNodes = new ArrayList<Node>();
 	private List<Node> closedNodes = new ArrayList<Node>();
 
-	private Node[] blockedNode = null;
+	private List<Node> path = new ArrayList<Node>();
 
-	public pathFinder(int startX, int startY, int endX, int endY) {
+	public pathFinder(int startX, int startY, int endX, int endY, Node[] blockedNodes) {
 		// create start and end nodes
 		endNode = new Node(endX, endY, null, null);
 
 		startNode = new Node(startX, startY, null, endNode);
 		startNode.set_gCost(0);
 
-		setCurrentNode(startNode);
+		currentNode = startNode;
+		openNodes.add(currentNode);
 
-		openNodes.add(startNode);
-
-		// Fill blocked node array
-	}
-
-	public void setCurrentNode(Node node) {
-		currentNode = node;
+		this.blockedNodes = blockedNodes;
 	}
 
 	public void findNeighborNodes() {
@@ -48,12 +44,11 @@ public class pathFinder {
 		int parentX = currentNode.getX();
 		int parentY = currentNode.getY();
 
-		for (int i = 0; i < neighborNode.length; i++)
-			if (true /* ignore blocked nodes and start node */) {
-				neighborNode[i] = new Node(parentX + NEIGHBOR_X_COORD_ORDER[i], parentY + NEIGHBOR_Y_COORD_ORDER[i],
-						currentNode, endNode);
-				neighborNode[i].set_gCost(parent_gCost + NEIGHBOR_G_COST_ORDER[i]);
-			}
+		for (int i = 0; i < neighborNode.length; i++) {
+			neighborNode[i] = new Node(parentX + NEIGHBOR_X_COORD_ORDER[i], parentY + NEIGHBOR_Y_COORD_ORDER[i],
+					currentNode, endNode);
+			neighborNode[i].set_gCost(parent_gCost + NEIGHBOR_G_COST_ORDER[i]);
+		}
 
 		// sort by f cost
 
@@ -78,22 +73,37 @@ public class pathFinder {
 		// node or blocked nodes
 
 		for (Node node : neighborNode)
-			if (!node.isEqual(startNode) /* && !isBlocked(node) */)
+			if (!isBlocked(node) && !closedNodes.contains(node) && !openNodes.contains(node))
 				openNodes.add(0, node);
 	}
-
-	/*
-	 * private boolean isBlocked(Node node) { for (Node blocked : blockedNode)
-	 * if (node.isEqual(blocked)) return true; return false; }
-	 */
-
+	
+	public void setCurrentNode(Node node) {
+		currentNode = node;
+	}
+	
 	public void closeCurrentNode() {
 		openNodes.remove(currentNode);
 		closedNodes.add(currentNode);
 	}
 
+	private boolean isBlocked(Node node) {
+		for (Node blocked : blockedNodes)
+			if (node.hasSameCoords(blocked))
+				return true;
+		return false;
+	}
+
 	public Node bestCandidateNode() {
-		return openNodes.get(0);
+		// make one pass and grab index of node with smallest f cost that isn't closed
+		int smallestCost = openNodes.get(0).get_fCost(), indexOfSmallest = 0;
+		
+		for (Node node : openNodes) 
+			if (!closedNodes.contains(node) && node.get_fCost() < smallestCost) {
+				smallestCost = node.get_fCost();
+				indexOfSmallest = openNodes.indexOf(node);
+			}
+		
+		return openNodes.get(indexOfSmallest);
 	}
 
 	public Node getCurrentNode() {
@@ -102,6 +112,22 @@ public class pathFinder {
 
 	public Node getEndNode() {
 		return endNode;
+	}
+
+	public Node createPathList(Node node) {
+		if (node.hasSameCoords(startNode))
+			return node;
+		else
+			createPathList(node.parent());
+		path.add(0, node);
+		return null;
+	}
+
+	public void printPath() {
+		System.out.println("Path:");
+		for (Node node : path)
+			System.out.print("(" + node.getX() + ", " + node.getY() + ") --> ");
+		System.out.println("(" + startNode.getX() + ", " + startNode.getY() + ")");
 	}
 
 	public void print() {
@@ -119,17 +145,17 @@ public class pathFinder {
 					+ neighborNode[i].get_gCost() + "\tH Cost: " + neighborNode[i].get_hCost() + "\tF Cost: "
 					+ neighborNode[i].get_fCost());
 
-		/*
-		 * System.out.println("List of Open Nodes:"); for (Node node :
-		 * openNodes) System.out.println("(" + node.getX() + ", " + node.getY()
-		 * + ")\t" + "G Cost: " + node.get_gCost() + "\tH Cost: " +
-		 * node.get_hCost() + "\tF Cost: " + node.get_fCost());
-		 * 
-		 * System.out.println("List of Closed Nodes:"); for (Node node :
-		 * closedNodes) System.out.println("(" + node.getX() + ", " +
-		 * node.getY() + ")\t" + "G Cost: " + node.get_gCost() + "\tH Cost: " +
-		 * node.get_hCost() + "\tF Cost: " + node.get_fCost());
-		 */
+		System.out.println();
+		System.out.println("List of Open Nodes:");
+		for (Node node : openNodes)
+			System.out.println("(" + node.getX() + ", " + node.getY() + ")\t\t" + "G Cost: " + node.get_gCost()
+					+ "\tH Cost: " + node.get_hCost() + "\tF Cost: " + node.get_fCost());
+
+		System.out.println();
+		System.out.println("List of Closed Nodes:");
+		for (Node node : closedNodes)
+			System.out.println("(" + node.getX() + ", " + node.getY() + ")\t\t" + "G Cost: " + node.get_gCost()
+					+ "\tH Cost: " + node.get_hCost() + "\tF Cost: " + node.get_fCost());
 	}
 }
 

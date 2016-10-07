@@ -1,7 +1,9 @@
 package aStar;
 
+import java.util.List;
+
 public class Node {
-	// distance from start node, distance from end node, combined cost
+	// distance from start node, distance from end node
 	private int gCost, hCost;
 	private int x, y;
 	private Node parentNode;
@@ -25,9 +27,23 @@ public class Node {
 		return parentNode;
 	}
 
-	public boolean isEqual(Node node) {
-		if (this.x == node.getX() && this.y == node.getY())
+	public boolean hasSameCoords(Node node) {
+		if (this.x == node.x && this.y == node.y)
 			return true;
+		return false;
+	}
+
+	public boolean isSameNode(Node node) {
+		if (this.x == node.x && this.y == node.y && this.parentNode == node.parentNode
+				&& this.gCost == node.gCost && this.hCost == node.hCost)
+			return true;
+		return false;
+	}
+	
+	public boolean isClosed(List<Node> closedNodes) {
+		for (Node node : closedNodes)
+			if (this.isSameNode(node))
+				return true;
 		return false;
 	}
 

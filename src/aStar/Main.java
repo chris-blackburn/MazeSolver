@@ -2,7 +2,13 @@ package aStar;
 
 public class Main {
 	public static void main (String [] args){
-		pathFinder maze = new pathFinder(0, 0, 9, 9 /* add node array for positions of blocked nodes*/);
+		pathFinder maze = new pathFinder(2, 2, 6, 2 /* add node array for positions of blocked nodes*/);
+		
+		/*do {
+			maze.findNeighborNodes();
+			maze.closeCurrentNode();
+			maze.setCurrentNode(maze.bestCandidateNode());
+		} while (!maze.getCurrentNode().isEqual(maze.getEndNode()));*/
 		
 		while (!maze.getCurrentNode().isEqual(maze.getEndNode())) {
 			maze.findNeighborNodes();
@@ -11,12 +17,6 @@ public class Main {
 			System.out.println("(" + maze.getCurrentNode().getX() + ", " + maze.getCurrentNode().getY() + ")" + "\t\tH Cost: " + maze.getCurrentNode().get_hCost());
 		}
 		
-		maze.createPathList(maze.getCurrentNode());
-		
-		System.out.println();
-		maze.print();
-		
-		System.out.println();
-		maze.printPath();
+		/*maze.print();*/
 	}
 }

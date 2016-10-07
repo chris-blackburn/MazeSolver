@@ -3,14 +3,13 @@ package aStar;
 import java.util.ArrayList;
 import java.util.List;
 
-public class pathFinder {
+public class PathFinder {
 
 	// constant multiples to add to G cost
 	private final int CROSS_COST = 10;
 	private final int DIAGANOL_COST = 14;
 
 	private Node startNode, endNode, currentNode;
-	private Node[] blockedNodes;
 	private Node[] neighborNode = new Node[8];
 
 	// order x: -1, 0, 1, -1, 1, -1, 0, 1
@@ -25,7 +24,7 @@ public class pathFinder {
 
 	private List<Node> path = new ArrayList<Node>();
 
-	public pathFinder(int startX, int startY, int endX, int endY, Node[] blockedNodes) {
+	public PathFinder(int startX, int startY, int endX, int endY, Node[] blockedNodes) {
 		// create start and end nodes
 		endNode = new Node(endX, endY, null, null);
 
@@ -35,7 +34,8 @@ public class pathFinder {
 		currentNode = startNode;
 		openNodes.add(currentNode);
 
-		this.blockedNodes = blockedNodes;
+		for (Node blocked : blockedNodes)
+			closedNodes.add(blocked);
 	}
 
 	public void findNeighborNodes() {
@@ -69,40 +69,33 @@ public class pathFinder {
 			cutOff--;
 		} while (swapped);
 
-		// add all to list of open Nodes unless they are equal to the starting
-		// node or blocked nodes
-
+		// add nodes not already part of any list
 		for (Node node : neighborNode)
-			if (!isBlocked(node) && !closedNodes.contains(node) && !openNodes.contains(node))
-				openNodes.add(0, node);
+			if (!closedNodes.contains(node) && !openNodes.contains(node))
+				openNodes.add(node);
 	}
-	
-	public void setCurrentNode(Node node) {
-		currentNode = node;
-	}
-	
-	public void closeCurrentNode() {
+
+	public void nextNode() {
 		openNodes.remove(currentNode);
 		closedNodes.add(currentNode);
-	}
 
-	private boolean isBlocked(Node node) {
-		for (Node blocked : blockedNodes)
-			if (node.hasSameCoords(blocked))
-				return true;
-		return false;
+		currentNode = bestCandidateNode();
 	}
 
 	public Node bestCandidateNode() {
-		// make one pass and grab index of node with smallest f cost that isn't closed
-		int smallestCost = openNodes.get(0).get_fCost(), indexOfSmallest = 0;
-		
-		for (Node node : openNodes) 
-			if (!closedNodes.contains(node) && node.get_fCost() < smallestCost) {
-				smallestCost = node.get_fCost();
+		// make one pass and grab index of node with smallest f cost that isn't
+		// closed
+		int smallest_fCost = openNodes.get(0).get_fCost(), smallest_hCost = openNodes.get(0).get_hCost(),
+				indexOfSmallest = 0;
+
+		for (Node node : openNodes)
+			if (node.get_fCost() != 0 && (node.get_fCost() < smallest_fCost
+					|| (node.get_fCost() == smallest_fCost && node.get_hCost() <= smallest_hCost))) {
+				smallest_fCost = node.get_fCost();
+				smallest_hCost = node.get_hCost();
 				indexOfSmallest = openNodes.indexOf(node);
 			}
-		
+
 		return openNodes.get(indexOfSmallest);
 	}
 
@@ -114,11 +107,11 @@ public class pathFinder {
 		return endNode;
 	}
 
-	public Node createPathList(Node node) {
+	public Node createPath(Node node) {
 		if (node.hasSameCoords(startNode))
 			return node;
 		else
-			createPathList(node.parent());
+			createPath(node.parent());
 		path.add(0, node);
 		return null;
 	}
@@ -131,14 +124,6 @@ public class pathFinder {
 	}
 
 	public void print() {
-		/*
-		 * for (int y = 0; y < grid[0].length; y++) for (int x = 0; x <
-		 * grid.length; x++) if (x < grid.length - 1) System.out.print("(" + x +
-		 * ", " + y + ")\t"); //System.out.print(grid[x][y] + " "); else
-		 * System.out.println("(" + x + ", " + y + ")\t");
-		 * //System.out.println(grid[x][y] + " ");
-		 */
-
 		System.out.println("Neighboring Nodes to Current Node:");
 		for (int i = 0; i < neighborNode.length; i++)
 			System.out.println(i + ":\t" + neighborNode[i].getX() + ", " + neighborNode[i].getY() + "\tG Cost: "
@@ -158,39 +143,3 @@ public class pathFinder {
 					+ "\tH Cost: " + node.get_hCost() + "\tF Cost: " + node.get_fCost());
 	}
 }
-
-/*
- * old neighborNode creator
- *
- * neighborNode[0] = new Node(currentNode.getX() - 1, currentNode.getY() + 1,
- * currentNode, endNode); neighborNode[0].set_gCost(currentNode.get_gCost() +
- * DIAGANOL_COST);
- * 
- * neighborNode[1] = new Node(currentNode.getX(), currentNode.getY() + 1,
- * currentNode, endNode); neighborNode[1].set_gCost(currentNode.get_gCost() +
- * CROSS_COST);
- * 
- * neighborNode[2] = new Node(currentNode.getX() + 1, currentNode.getY() + 1,
- * currentNode, endNode); neighborNode[2].set_gCost(currentNode.get_gCost() +
- * DIAGANOL_COST);
- * 
- * neighborNode[3] = new Node(currentNode.getX() - 1, currentNode.getY(),
- * currentNode, endNode); neighborNode[3].set_gCost(currentNode.get_gCost() +
- * CROSS_COST);
- * 
- * neighborNode[4] = new Node(currentNode.getX() + 1, currentNode.getY(),
- * currentNode, endNode); neighborNode[4].set_gCost(currentNode.get_gCost() +
- * CROSS_COST);
- * 
- * neighborNode[5] = new Node(currentNode.getX() - 1, currentNode.getY() - 1,
- * currentNode, endNode); neighborNode[5].set_gCost(currentNode.get_gCost() +
- * DIAGANOL_COST);
- * 
- * neighborNode[6] = new Node(currentNode.getX(), currentNode.getY() - 1,
- * currentNode, endNode); neighborNode[6].set_gCost(currentNode.get_gCost() +
- * CROSS_COST);
- * 
- * neighborNode[7] = new Node(currentNode.getX() + 1, currentNode.getY() - 1,
- * currentNode, endNode); neighborNode[7].set_gCost(currentNode.get_gCost() +
- * DIAGANOL_COST);
- */

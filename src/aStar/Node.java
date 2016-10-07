@@ -34,17 +34,27 @@ public class Node {
 	}
 
 	public boolean isSameNode(Node node) {
-		if (this.x == node.x && this.y == node.y && this.parentNode == node.parentNode
-				&& this.gCost == node.gCost && this.hCost == node.hCost)
+		if (this.x == node.x && this.y == node.y && this.gCost == node.gCost && this.hCost == node.hCost)
 			return true;
 		return false;
 	}
-	
-	public boolean isClosed(List<Node> closedNodes) {
-		for (Node node : closedNodes)
-			if (this.isSameNode(node))
+
+	@Override
+	public boolean equals(Object obj) {
+		Node node = (Node) obj;
+
+		if (node.get_fCost() == 0) {
+			if (this.hasSameCoords(node))
 				return true;
+		} else if (this.isSameNode(node))
+			return true;
+
 		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.hashCode();
 	}
 
 	public void set_gCost(int cost) {
@@ -52,8 +62,7 @@ public class Node {
 	}
 
 	private void set_hCost(Node endNode) {
-		if (endNode == null) // for creating the endNode itself on the grid, the
-								// hCost would be 0
+		if (endNode == null) // end nodes h cost is 0
 			hCost = 0;
 		else
 			hCost = 10 * (Math.abs(this.x - endNode.getX()) + Math.abs(this.y - endNode.getY()));

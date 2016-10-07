@@ -22,8 +22,10 @@ public class pathFinder {
 	private List<Node> openNodes = new ArrayList<Node>();
 	private List<Node> closedNodes = new ArrayList<Node>();
 
-	private Node[] blockedNode = null;
-
+	private Node[] blockedNodes = null;
+	
+	private List<Node> path = new ArrayList<Node>();
+	
 	public pathFinder(int startX, int startY, int endX, int endY) {
 		// create start and end nodes
 		endNode = new Node(endX, endY, null, null);
@@ -83,7 +85,7 @@ public class pathFinder {
 	}
 
 	/*
-	 * private boolean isBlocked(Node node) { for (Node blocked : blockedNode)
+	 * private boolean isBlocked(Node node) { for (Node blocked : blockedNodes)
 	 * if (node.isEqual(blocked)) return true; return false; }
 	 */
 
@@ -103,6 +105,23 @@ public class pathFinder {
 	public Node getEndNode() {
 		return endNode;
 	}
+	
+	public Node createPathList(Node node) {
+		if (node.isEqual(startNode))
+			return node;
+		else
+			createPathList(node.parent());
+		path.add(0, node);
+		return node;
+	}
+		
+	
+	public void printPath() {
+		System.out.println("Path:");
+		for (Node node : path) 
+			System.out.print("(" + node.getX() + ", " + node.getY() + ") --> ");
+		System.out.println("(" + startNode.getX() + ", " + startNode.getY() + ")");
+	}
 
 	public void print() {
 		/*
@@ -119,17 +138,17 @@ public class pathFinder {
 					+ neighborNode[i].get_gCost() + "\tH Cost: " + neighborNode[i].get_hCost() + "\tF Cost: "
 					+ neighborNode[i].get_fCost());
 
-		/*
-		 * System.out.println("List of Open Nodes:"); for (Node node :
-		 * openNodes) System.out.println("(" + node.getX() + ", " + node.getY()
-		 * + ")\t" + "G Cost: " + node.get_gCost() + "\tH Cost: " +
-		 * node.get_hCost() + "\tF Cost: " + node.get_fCost());
-		 * 
-		 * System.out.println("List of Closed Nodes:"); for (Node node :
-		 * closedNodes) System.out.println("(" + node.getX() + ", " +
-		 * node.getY() + ")\t" + "G Cost: " + node.get_gCost() + "\tH Cost: " +
-		 * node.get_hCost() + "\tF Cost: " + node.get_fCost());
-		 */
+		System.out.println();
+		System.out.println("List of Open Nodes:");
+		for (Node node : openNodes)
+			System.out.println("(" + node.getX() + ", " + node.getY() + ")\t\t" + "G Cost: " + node.get_gCost()
+					+ "\tH Cost: " + node.get_hCost() + "\tF Cost: " + node.get_fCost());
+
+		System.out.println();
+		System.out.println("List of Closed Nodes:");
+		for (Node node : closedNodes)
+			System.out.println("(" + node.getX() + ", " + node.getY() + ")\t\t" + "G Cost: " + node.get_gCost()
+					+ "\tH Cost: " + node.get_hCost() + "\tF Cost: " + node.get_fCost());
 	}
 }
 

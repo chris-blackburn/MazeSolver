@@ -123,13 +123,16 @@ public class PathFinder {
 		System.out.println("(" + startNode.getX() + ", " + startNode.getY() + ")");
 	}
 
-	public void print() {
+	
+	public void printCurrentNeighborNodes() {
+		System.out.println();
 		System.out.println("Neighboring Nodes to Current Node:");
 		for (int i = 0; i < neighborNode.length; i++)
 			System.out.println(i + ":\t" + neighborNode[i].getX() + ", " + neighborNode[i].getY() + "\tG Cost: "
 					+ neighborNode[i].get_gCost() + "\tH Cost: " + neighborNode[i].get_hCost() + "\tF Cost: "
 					+ neighborNode[i].get_fCost());
-
+	}
+	public void printLists() {
 		System.out.println();
 		System.out.println("List of Open Nodes:");
 		for (Node node : openNodes)

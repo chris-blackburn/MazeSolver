@@ -1,7 +1,5 @@
 package aStar;
 
-import java.util.List;
-
 public class Node {
 	// distance from start node, distance from end node
 	private int gCost, hCost;

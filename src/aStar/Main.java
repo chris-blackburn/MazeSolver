@@ -12,16 +12,13 @@ public class Main {
 		while (!maze.getCurrentNode().hasSameCoords(maze.getEndNode())) {
 			maze.findNeighborNodes();
 			maze.nextNode();
-			
-			System.out.println("(" + maze.getCurrentNode().getX() + ", " + maze.getCurrentNode().getY() + ")"
-					+ "\t-\tG Cost: " + maze.getCurrentNode().get_gCost() + "\tH Cost: "
-					+ maze.getCurrentNode().get_hCost() + "\tF Cost: " + maze.getCurrentNode().get_fCost());
+			maze.printCurrentNeighborNodes();
 		}
 
 		maze.createPath(maze.getCurrentNode());
 
 		System.out.println();
-		maze.print();
+		maze.printLists();
 
 		System.out.println();
 		maze.printPath();

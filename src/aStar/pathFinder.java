@@ -24,7 +24,7 @@ public class PathFinder {
 
 	private List<Node> path = new ArrayList<Node>();
 
-	public PathFinder(int startX, int startY, int endX, int endY, Node[] blockedNodes) {
+	public PathFinder(int startX, int startY, int endX, int endY, List<Node> blockedNodes) {
 		// create start and end nodes
 		endNode = new Node(endX, endY, null, null);
 
@@ -34,8 +34,7 @@ public class PathFinder {
 		currentNode = startNode;
 		openNodes.add(currentNode);
 
-		for (Node blocked : blockedNodes)
-			closedNodes.add(blocked);
+		closedNodes.addAll(blockedNodes);
 	}
 
 	public void findNeighborNodes() {
@@ -115,6 +114,11 @@ public class PathFinder {
 		path.add(0, node);
 		return null;
 	}
+	
+	public List<Node> getPathList() {
+		path.remove(0);
+		return path;
+	}
 
 	public void printPath() {
 		System.out.println("Path:");
@@ -144,5 +148,13 @@ public class PathFinder {
 		for (Node node : closedNodes)
 			System.out.println("(" + node.getX() + ", " + node.getY() + ")\t\t" + "G Cost: " + node.get_gCost()
 					+ "\tH Cost: " + node.get_hCost() + "\tF Cost: " + node.get_fCost());
+	}
+	
+	public List<Node> getClosedList(){
+		return closedNodes;
+	}
+	
+	public List<Node> getOpenList(){
+		return openNodes;
 	}
 }

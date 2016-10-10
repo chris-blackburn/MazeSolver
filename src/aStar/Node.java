@@ -32,7 +32,7 @@ public class Node {
 	}
 
 	public boolean isSameNode(Node node) {
-		if (this.x == node.x && this.y == node.y && this.gCost == node.gCost && this.hCost == node.hCost)
+		if (this.x == node.x && this.y == node.y && this.gCost >= node.gCost && this.hCost == node.hCost)
 			return true;
 		return false;
 	}

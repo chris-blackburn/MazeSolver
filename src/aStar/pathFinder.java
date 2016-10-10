@@ -119,6 +119,14 @@ public class PathFinder {
 		path.remove(0);
 		return path;
 	}
+	
+	public List<Node> getOpen() {
+		return openNodes;
+	}
+	
+	public List<Node> getClosed() {
+		return closedNodes;
+	}
 
 	public void printPath() {
 		System.out.println("Path:");
@@ -126,7 +134,6 @@ public class PathFinder {
 			System.out.print("(" + node.getX() + ", " + node.getY() + ") --> ");
 		System.out.println("(" + startNode.getX() + ", " + startNode.getY() + ")");
 	}
-
 	
 	public void printCurrentNeighborNodes() {
 		System.out.println();
@@ -148,13 +155,5 @@ public class PathFinder {
 		for (Node node : closedNodes)
 			System.out.println("(" + node.getX() + ", " + node.getY() + ")\t\t" + "G Cost: " + node.get_gCost()
 					+ "\tH Cost: " + node.get_hCost() + "\tF Cost: " + node.get_fCost());
-	}
-	
-	public List<Node> getClosedList(){
-		return closedNodes;
-	}
-	
-	public List<Node> getOpenList(){
-		return openNodes;
 	}
 }

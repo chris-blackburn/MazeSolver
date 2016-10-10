@@ -18,12 +18,14 @@ public class NodeJLabel extends JLabel implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-			
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		
+		if (!GUI.canChooseNewEnds())
+			if (e.getModifiers() == MouseEvent.BUTTON1_MASK)
+				changeColor();
 	}
 
 	@Override
@@ -33,18 +35,21 @@ public class NodeJLabel extends JLabel implements MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		changeColorandUpdate();
+		if (GUI.canChooseNewEnds())
+			this.setBackground(Color.MAGENTA);
+		else
+			changeColor();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 
 	}
-	
-	private void changeColorandUpdate() {
+
+	private void changeColor() {
 		if (this.getBackground() == Color.BLACK)
 			this.setBackground(Color.WHITE);
-		else if (this.getBackground() == Color.WHITE)
+		else if (this.getBackground() != Color.DARK_GRAY && this.getBackground() != Color.MAGENTA)
 			this.setBackground(Color.BLACK);
 	}
 }

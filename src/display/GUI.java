@@ -23,6 +23,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import java.awt.Font;
 
 public class GUI {
 
@@ -49,11 +50,11 @@ public class GUI {
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
-			@SuppressWarnings("static-access")
+			
 			public void run() {
 				try {
-					GUI window = new GUI();
-					window.frame.setVisible(true);
+					new GUI();
+					GUI.frame.setVisible(true);
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -74,9 +75,8 @@ public class GUI {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setResizable(false);
 		frame.setTitle("Maze Solver");
-		frame.setBounds(100, 100, 750, 750);
+		frame.setBounds(100, 100, 850, 850);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		frame.getContentPane().setLayout(new GridLayout(yRange, xRange, 1, 1));
@@ -85,9 +85,11 @@ public class GUI {
 		frame.setJMenuBar(menuBar);
 
 		JMenu mnNewMenu = new JMenu("Maze");
+		mnNewMenu.setFont(new Font("Segoe UI", Font.PLAIN, 22));
 		menuBar.add(mnNewMenu);
 
 		JMenuItem mntmSolve = new JMenuItem("Solve");
+		mntmSolve.setFont(new Font("Segoe UI", Font.PLAIN, 22));
 		mntmSolve.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetPath();
@@ -105,6 +107,7 @@ public class GUI {
 		mnNewMenu.add(mntmSolve);
 
 		JMenuItem mntmReset = new JMenuItem("Reset");
+		mntmReset.setFont(new Font("Segoe UI", Font.PLAIN, 22));
 		mntmReset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				resetGrid();
@@ -113,12 +116,15 @@ public class GUI {
 		mnNewMenu.add(mntmReset);
 
 		JMenu mnOptions = new JMenu("Options");
+		mnOptions.setFont(new Font("Segoe UI", Font.PLAIN, 22));
 		menuBar.add(mnOptions);
 
 		JMenu mnDraw = new JMenu("Draw");
+		mnDraw.setFont(new Font("Segoe UI", Font.PLAIN, 22));
 		mnOptions.add(mnDraw);
 
 		JMenuItem mntmSetBounds = new JMenuItem("Set Bounds");
+		mntmSetBounds.setFont(new Font("Segoe UI", Font.PLAIN, 22));
 		mntmSetBounds.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frame.dispose();
@@ -126,7 +132,7 @@ public class GUI {
 				startX = 1;
 				startY = 1;
 				endX = xRange - 2;
-				endY = yRange - 2;
+				endY = yRange - 2;				
 				main(null);
 
 			}
@@ -134,6 +140,7 @@ public class GUI {
 		mnDraw.add(mntmSetBounds);
 
 		JMenuItem mntmSetStart = new JMenuItem("Set Start");
+		mntmSetStart.setFont(new Font("Segoe UI", Font.PLAIN, 22));
 		mntmSetStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				updateLabel(startX, startY, Color.WHITE);
@@ -146,6 +153,7 @@ public class GUI {
 		mnDraw.add(mntmSetStart);
 
 		JMenuItem mntmSetEnd = new JMenuItem("Set End");
+		mntmSetEnd.setFont(new Font("Segoe UI", Font.PLAIN, 22));
 		mntmSetEnd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				updateLabel(endX, endY, Color.WHITE);
@@ -158,6 +166,7 @@ public class GUI {
 		mnDraw.add(mntmSetEnd);
 
 		JMenuItem mntmSolvePicture = new JMenuItem("Map Picture");
+		mntmSolvePicture.setFont(new Font("Segoe UI", Font.PLAIN, 22));
 		mnOptions.add(mntmSolvePicture);
 
 		// initialize grid size
@@ -173,7 +182,7 @@ public class GUI {
 
 	private static void popupSetBounds() {
 		JPanel panel = new JPanel();
-
+		
 		SpinnerModel modelW = new SpinnerNumberModel(25, 2, 100, 1);
 		JSpinner width = new JSpinner(modelW);
 		SpinnerModel modelH = new SpinnerNumberModel(25, 2, 100, 1);
@@ -183,9 +192,9 @@ public class GUI {
 		panel.add(width);
 		panel.add(new JLabel("Height: "));
 		panel.add(height);
-
+		
 		int result = JOptionPane.showConfirmDialog(null, panel, "Input Width and Height", JOptionPane.OK_CANCEL_OPTION);
-
+		
 		if (result == JOptionPane.OK_OPTION) {
 			xRange = (int) width.getValue() + 2;
 			yRange = (int) height.getValue() + 2;
@@ -296,11 +305,11 @@ public class GUI {
 						updateLabel(x, y, Color.WHITE);
 	}
 
-	private static void printMaze(PathFinder maze) {
+	/*private static void printMaze(PathFinder maze) {
 		System.out.println();
 		maze.printLists();
 
 		System.out.println();
 		maze.printPath();
-	}
+	}*/
 }
